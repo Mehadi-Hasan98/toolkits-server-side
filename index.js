@@ -63,11 +63,12 @@ async function run() {
             res.send({admin: isAdmin})
           });
 
-          app.get('/information/:email', async(req, res) =>{
-              const email = req.params.email;
-              const information = await informationCollection.findOne({email: email});
-              res.send(information);
-          })
+          app.get("/information", async (req, res) => {
+            const email = req.query.email;
+            const query = {email: email}
+            const cursor = await informationCollection.find(query).toArray();
+            res.send(cursor);
+          });
 
         //   POST 
 
@@ -109,15 +110,6 @@ async function run() {
             const query = {email: email}
             const cursor = await orderCollection.find(query).toArray();
             res.send(cursor);
-            // const decodedEmail = req.decoded.email;
-            // if (email === decodedEmail) {
-            //   const query = { email: email };
-            //   const cursor = orderCollections.find(query);
-            //   const result = await cursor.toArray();
-            //   return res.send(result);
-            // } else {
-            //   return res.status(403).send({ message: "forbidden access" });
-            // }
           });
 
 
