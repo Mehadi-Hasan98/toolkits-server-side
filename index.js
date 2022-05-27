@@ -42,6 +42,8 @@ async function run() {
         const orderCollection = client.db("toolkits").collection("order");
         const informationCollection = client.db("toolkits").collection("information");
 
+        // GET
+
          app.get('/product', async (req, res) =>{
              const query = {};
              const cursor = productsCollection.find(query);
@@ -60,6 +62,12 @@ async function run() {
             const isAdmin = user.role === 'admin';
             res.send({admin: isAdmin})
           });
+
+          app.get('/information/:email', async(req, res) =>{
+              const email = req.params.email;
+              const information = await informationCollection.findOne({email: email});
+              res.send(information);
+          })
 
         //   POST 
 
