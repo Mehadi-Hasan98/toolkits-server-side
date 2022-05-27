@@ -148,6 +148,13 @@ async function run() {
             res.send(result);
         });
 
+        app.delete('/order/:id', async(req, res) =>{
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await orderCollection.deleteOne(query);
+            res.send(result);
+        });
+
          app.put('/user/:email', async(req, res) =>{
              const email = req.params.email;
              const user = req.body;
@@ -159,7 +166,29 @@ async function run() {
               const result = await usersCollection.updateOne(filter, updateDoc, options);
               const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' })
               res.send({result, token});
-         })
+         });
+
+//           // update stock  quantity
+//    app.put("/item/:id", async (req, res) => {
+//     const id = req.params.id;
+//     const newQuantity = req.body;
+
+//     const filter = { _id: ObjectId(id) };
+//     const options = { upsert: true };
+//     const updatedDoc = {
+//       $set: {
+//         quantity: newQuantity.quantity,
+//       },
+//     };
+//     const result = await itemCollection.updateOne(
+//       filter,
+//       updatedDoc,
+//       options
+//     );
+//     res.send(result);
+//   });
+
+
 
     }
     finally {
