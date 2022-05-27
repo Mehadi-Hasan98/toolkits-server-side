@@ -39,7 +39,8 @@ async function run() {
           .collection("products");
         const reviewsCollection = client.db("toolkits").collection("reviews");
         const usersCollection = client.db("toolkits").collection("users");
-        const orderCollection = client.db("toolkits").collection("order")
+        const orderCollection = client.db("toolkits").collection("order");
+        const informationCollection = client.db("toolkits").collection("information");
 
          app.get('/product', async (req, res) =>{
              const query = {};
@@ -79,6 +80,12 @@ async function run() {
             const order = await orderCollection.insertOne(query);
             res.send(order);
         });
+
+        app.post('/information', async(req, res) => {
+            const query = req.body;
+            const information = await informationCollection.insertOne(query);
+            res.send(information);
+        })
 
         // GET
 
