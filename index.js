@@ -41,6 +41,7 @@ async function run() {
         const usersCollection = client.db("toolkits").collection("users");
         const orderCollection = client.db("toolkits").collection("order");
         const informationCollection = client.db("toolkits").collection("information");
+        const paymentCollection = client.db("toolkits").collection('payments');
 
 
         const verifyAdmin = async (req, res, next) => {
@@ -53,6 +54,20 @@ async function run() {
             res.status(403).send({ message: 'forbidden' });
           }
         }
+
+
+
+        app.post('/create-payment-intent',  async(req, res) =>{
+            const service = req.body;
+            const price = service.price;
+            const amount = price*100;
+            const paymentIntent = await stripe.paymentIntents.create({
+              amount : amount,
+              currency: 'usd',
+              payment_method_types:['card']
+            });
+            res.send({clientSecret: paymentIntent.client_secret})
+          });
 
         // GET
 
@@ -187,6 +202,22 @@ async function run() {
               res.send({result, token});
          });
 
+         app.patch('/order/:id', async(req, res) =>{
+            const id  = req.params.id;
+            const payment = req.body;
+            const filter = {_id: ObjectId(id)};
+            const updatedDoc = {
+              $set: {
+                paid: true,
+                transactionId: payment.transactionId
+              }
+            }
+      
+            const result = await paymentCollection.insertOne(payment);
+            const updatedOrder = await orderCollection.updateOne(filter, updatedDoc);
+            res.send(updatedOrder);
+          })
+
 //           // update stock  quantity
 //    app.put("/item/:id", async (req, res) => {
 //     const id = req.params.id;
@@ -226,9 +257,3 @@ app.listen(port, () => {
   });
 
 
-//   git init
-// git add README.md
-// git commit -m "first commit"
-// git branch -M main
-// git remote add origin https://github.com/programming-hero-web-course1/manufacturer-website-server-side-Mehadi-Hasan98.git
-// git push -u origin main
