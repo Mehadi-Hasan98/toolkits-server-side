@@ -63,7 +63,7 @@ async function run() {
              res.send(products);
          });
 
-         app.get('/user', verifyJWT, async (req, res) => {
+         app.get('/user', async (req, res) => {
             const users = await usersCollection.find().toArray();
             res.send(users);
           });
@@ -96,7 +96,7 @@ async function run() {
             res.send(result);
         });
 
-        app.post('/order', verifyJWT, verifyAdmin, async(req, res) =>{
+        app.post('/order', async(req, res) =>{
             const query = req.body;
             const order = await orderCollection.insertOne(query);
             res.send(order);
@@ -110,7 +110,7 @@ async function run() {
 
         // GET
 
-        app.get('/order', verifyJWT, verifyAdmin, async(req, res) =>{
+        app.get('/order', async(req, res) =>{
             const query = req.body;
             const orders = await orderCollection.find(query).toArray();
             res.send(orders);
@@ -127,7 +127,7 @@ async function run() {
 
         // PUT 
 
-          app.put('/user/admin/:email', verifyJWT, verifyAdmin, async (req, res) => {
+          app.put('/user/admin/:email', async (req, res) => {
             const email = req.params.email;
             const filter = { email: email };
             const updateDoc = {
