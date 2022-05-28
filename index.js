@@ -96,7 +96,7 @@ async function run() {
             res.send(result);
         });
 
-        app.post('/order', async(req, res) =>{
+        app.post('/order', verifyJWT, verifyAdmin, async(req, res) =>{
             const query = req.body;
             const order = await orderCollection.insertOne(query);
             res.send(order);
@@ -110,7 +110,7 @@ async function run() {
 
         // GET
 
-        app.get('/order', async(req, res) =>{
+        app.get('/order', verifyJWT, verifyAdmin, async(req, res) =>{
             const query = req.body;
             const orders = await orderCollection.find(query).toArray();
             res.send(orders);
